@@ -1,36 +1,9 @@
-# Transitive\Front
+# Transitive\Routing
 
-[![Latest Stable Version](https://poser.pugx.org/transitive/front/v/stable?format=flat-square)](https://packagist.org/packages/transitive/front)
-[![License](https://poser.pugx.org/transitive/front/license?format=flat-square)](https://packagist.org/packages/transitive/front)
-[![Build Status](https://travis-ci.org/RobinDumontChaponet/TransitiveFront.svg?branch=next)](https://travis-ci.org/RobinDumontChaponet/TransitiveFront)
-[![Coverage Status](https://coveralls.io/repos/github/RobinDumontChaponet/TransitiveFront/badge.svg)](https://coveralls.io/github/RobinDumontChaponet/TransitiveFront)
-
-## Installation
-
-```sh
-composer require transitive/front
-```
-
-## Basic Usage
-
-```php
-<?php
-use Transitive\Front;
-use Transitive\Core\Route;
-
-require __DIR__.'/../vendor/autoload.php';
-
-$front = new Transitive\Front\WebFront();
-
-$front->addRouter(new Transitive\Front\PathRouter(dirname(dirname(__FILE__)).'/presenters', dirname(dirname(__FILE__)).'/views'));
-
-$request = @$_GET['request'];
-
-$front->execute($request ?? 'index');
-
-echo $front;
-
-```
+[![Latest Stable Version](https://poser.pugx.org/transitive/routing/v/stable?format=flat-square)](https://packagist.org/packages/transitive/routing)
+[![License](https://poser.pugx.org/transitive/routing/license?format=flat-square)](https://packagist.org/packages/transitive/routing)
+[![Build Status](https://travis-ci.org/RobinDumontChaponet/TransitiveRouting.svg?branch=master)](https://travis-ci.org/RobinDumontChaponet/TransitiveRouting)
+[![Coverage Status](https://coveralls.io/repos/github/RobinDumontChaponet/TransitiveRouting/badge.svg)](https://coveralls.io/github/RobinDumontChaponet/TransitiveRouting)
 
 ## License
 
