@@ -9,6 +9,8 @@ use Transitive\Core;
  */
 class Route
 {
+	const defaultViewClassName = '\Transitive\Simple\View';
+
     private static function _include($exposedVariables, $_prefix) {
         extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : null, $_prefix);
         unset($exposedVariables);
@@ -78,7 +80,7 @@ class Route
 
         if(is_string($view)) {
             if(empty($this->defaultViewClassName))
-                $view = new Core\BasicView();
+                $view = new call_user_func(self::defaultViewClassName);
             else
                 $view = new $this->defaultViewClassName();
             $view->content = '';
@@ -130,7 +132,7 @@ class Route
 
     private $exposedVariables;
 
-    public function setDefaultViewClassName(?string $defaultViewClassName = '\Transitive\Core\BasicView'): void
+    public function setDefaultViewClassName(?string $defaultViewClassName = self::defaultViewClassName): void
     {
         $this->defaultViewClassName = $defaultViewClassName;
     }
