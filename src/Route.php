@@ -9,7 +9,7 @@ use Transitive\Core;
  */
 class Route
 {
-	const defaultViewClassName = '\Transitive\Simple\View';
+    const defaultViewClassName = '\Transitive\Simple\View';
 
     private static function _include($exposedVariables, $_prefix) {
         extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : null, $_prefix);
