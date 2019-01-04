@@ -11,7 +11,8 @@ class Route
 {
     const defaultViewClassName = '\Transitive\Simple\View';
 
-    private static function _include($exposedVariables, $_prefix) {
+    private static function _include($exposedVariables, $_prefix): void
+    {
         extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : null, $_prefix);
         unset($exposedVariables);
 

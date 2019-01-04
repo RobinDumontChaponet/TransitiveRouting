@@ -2,6 +2,7 @@
 	"name": "transitive/routing",
 	"description": "Routing classes of Transitive MVP framework",
 	"keywords": ["framework", "mvp", "router", "frontcontroller", "model", "view", "presenter"],
+	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{

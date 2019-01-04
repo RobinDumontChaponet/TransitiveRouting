@@ -14,7 +14,7 @@ interface FrontController
     /**
      * Execute routers for query and return route if any.
      *
-     * @return Route
+     * @return ?Route
      *
      * @param string $queryUrl = null
      */
@@ -23,14 +23,14 @@ interface FrontController
     /**
      * Get all routers.
      *
-     * @return array
+     * @return Router[]
      */
     public function getRouters(): array;
 
     /**
      * Set routers list, replacing any previously set router.
      *
-     * @param array $routers
+     * @param Router[] $routers
      */
     public function setRouters(array $routers): void;
 
@@ -54,7 +54,7 @@ interface FrontController
     /**
      * Return current route.
      *
-     * @return Route
+     * @return ?Route
      */
     public function getRoute(): ?Route;
 
