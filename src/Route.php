@@ -225,7 +225,7 @@ class Route
     public function getHead(): Core\ViewResource
     {
         if(isset($this->view))
-            return $this->view->getHeadValue();
+            return $this->view->getHead();
     }
 
     public function getBody()
