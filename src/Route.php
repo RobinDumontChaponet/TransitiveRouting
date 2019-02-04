@@ -207,19 +207,28 @@ class Route
     /**
      * @param string $key
      */
-    public function hasContent(string $key = null): bool
+    public function hasContent(?string $contentType = null, ?string $contentKey = null): bool
     {
         if(isset($this->view))
-            return $this->view->hasContent($key);
+            return $this->view->hasContent($contentType, $contentKey);
     }
 
     /**
      * @param string $key
      */
-    public function getContent(string $key = null)
+    public function getContent(?string $contentType = null, ?string $contentKey = null)
     {
         if(isset($this->view))
-            return $this->view->getContent($key);
+            return $this->view->getContent($contentType, $contentKey);
+    }
+
+    /**
+     * @param string $contentType
+     */
+    public function getContentByType(?string $contentType = null)
+    {
+        if(isset($this->view))
+            return $this->view->getContentByType($contentType);
     }
 
     public function getHead(): Core\ViewResource
@@ -238,5 +247,11 @@ class Route
     {
         if(isset($this->view))
             return $this->view->getDocument();
+    }
+
+    public function getAllDocument()
+    {
+        if(isset($this->view))
+            return $this->view->getAllDocument();
     }
 }
