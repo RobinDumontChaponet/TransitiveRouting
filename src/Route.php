@@ -84,7 +84,7 @@ class Route
                 $view = new call_user_func(self::defaultViewClassName);
             else
                 $view = new $this->defaultViewClassName();
-            $view->content = '';
+//             $view->content = '';
 
             if(is_file($this->getView())) {
                 $obContent .= self::includeView($this->getView(), ['view' => &$view], $this->prefix, $obClean);
