@@ -11,6 +11,40 @@ class Route
 {
     const defaultViewClassName = '\Transitive\Simple\View';
 
+    /**
+     * @var string | null : prefix for exposed variables
+     */
+    private $prefix;
+
+    /**
+     * @var string : View's ClassName for when we have specified a path instead of a View instance
+     */
+    private $defaultViewClassName;
+
+    /**
+     * @var Core\Presenter | string
+     */
+    public $presenter;
+
+    /**
+     * @var Core\View | string | null
+     */
+    public $view;
+
+    /**
+     * @var array
+     */
+    private $exposedVariables;
+
+    public function __construct($presenter, $view = null, string $prefix = null, array $exposedVariables = [], string $defaultViewClassName = null)
+    {
+        $this->presenter = $presenter;
+        $this->view = $view;
+        $this->prefix = $prefix;
+        $this->exposedVariables = $exposedVariables;
+        $this->setDefaultViewClassName($defaultViewClassName);
+    }
+
     private static function _include($exposedVariables, $_prefix): void
     {
         extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : null, $_prefix);
@@ -102,37 +136,6 @@ class Route
         return $obContent;
     }
 
-    public function __construct($presenter, $view = null, string $prefix = null, array $exposedVariables = [], string $defaultViewClassName = null)
-    {
-        $this->presenter = $presenter;
-        $this->view = $view;
-        $this->prefix = $prefix;
-        $this->exposedVariables = $exposedVariables;
-        $this->setDefaultViewClassName($defaultViewClassName);
-    }
-
-    /**
-     * @var string | null : prefix for exposed variables
-     */
-    private $prefix;
-
-    /**
-     * @var string : View's ClassName for when we have specified a path instead of a View instance
-     */
-    private $defaultViewClassName;
-
-    /**
-     * @var Core\Presenter | string
-     */
-    public $presenter;
-
-    /**
-     * @var Core\View | string | null
-     */
-    public $view;
-
-    private $exposedVariables;
-
     public function setDefaultViewClassName(?string $defaultViewClassName = self::defaultViewClassName): void
     {
         $this->defaultViewClassName = $defaultViewClassName;
@@ -146,6 +149,17 @@ class Route
     public function setExposedVariables(array $exposedVariables = []): void
     {
         $this->exposedVariables = $exposedVariables;
+    }
+
+    public function addExposedVariable(string $key, $value = null): void
+    {
+        $this->exposedVariables[$key] = $value;
+    }
+
+    public function removeExposedVariable(string $key): void
+    {
+        if(isset($this->exposedVariables[$key]))
+            unset($this->exposedVariables[$key]);
     }
 
     public function hasExposedVariables(): bool
