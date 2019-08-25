@@ -114,9 +114,10 @@ class Route
         $view = $this->getView();
 
         if(is_string($view)) {
-            if(empty($this->defaultViewClassName))
-                $view = new call_user_func(self::defaultViewClassName);
-            else
+            if(empty($this->defaultViewClassName)) {
+                $className = self::defaultViewClassName;
+                $view = new $className();
+            } else
                 $view = new $this->defaultViewClassName();
 //             $view->content = '';
 
