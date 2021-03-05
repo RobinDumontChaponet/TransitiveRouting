@@ -226,6 +226,8 @@ class Route
     {
         if(isset($this->view))
             return $this->view->hasContent($contentType, $contentKey);
+
+        return false;
     }
 
     /**
