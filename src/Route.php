@@ -12,9 +12,9 @@ class Route
     const defaultViewClassName = '\Transitive\Simple\View';
 
     /**
-     * @var string | null : prefix for exposed variables
+     * @var string : prefix for exposed variables
      */
-    private $prefix;
+    private $prefix = '';
 
     /**
      * @var string : View's ClassName for when we have specified a path instead of a View instance
@@ -45,9 +45,9 @@ class Route
         $this->setDefaultViewClassName($defaultViewClassName);
     }
 
-    private static function _include($exposedVariables, $_prefix): void
+    private static function _include(array $exposedVariables, ?string $_prefix = ''): void
     {
-        extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : null, $_prefix);
+        extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : EXTR_OVERWRITE, $_prefix ?? '');
         unset($exposedVariables);
 
         include ${$_prefix.((!empty($_prefix)) ? '_' : '').'path'};
