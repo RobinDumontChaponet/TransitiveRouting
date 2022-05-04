@@ -6,17 +6,11 @@ interface FrontController
 {
     /**
      * Get presenter & view buffer (if obClean is enabled).
-     *
-     * @return string
      */
     public function getObContent(): string;
 
     /**
      * Execute routers for query and return route if any.
-     *
-     * @return ?Route
-     *
-     * @param string $queryUrl = null
      */
     public function execute(string $queryURL = null): ?Route;
 
@@ -44,26 +38,16 @@ interface FrontController
     /**
      * Remove specified router
      * return true at success and false otherwise.
-     *
-     * @return bool
-     *
-     * @param Router $router
      */
     public function removeRouter(Router $router): bool;
 
     /**
      * Return current route.
-     *
-     * @return ?Route
      */
     public function getRoute(): ?Route;
 
     /**
      * Return processed content from current route.
-     *
-     * @return string
-     *
-     * @param string $contentType = null
      */
     public function getContent(string $contentType = null): string;
 }

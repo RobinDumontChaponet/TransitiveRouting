@@ -11,37 +11,19 @@ class Route
 {
     const defaultViewClassName = '\Transitive\Simple\View';
 
-    /**
-     * @var string : prefix for exposed variables
-     */
-    private $prefix = '';
-
-    /**
-     * @var string : View's ClassName for when we have specified a path instead of a View instance
-     */
-    private $defaultViewClassName;
-
-    /**
-     * @var Core\Presenter | string
-     */
-    public $presenter;
-
-    /**
-     * @var Core\View | string | null
-     */
-    public $view;
-
-    /**
-     * @var array
-     */
-    private $exposedVariables;
-
-    public function __construct($presenter, $view = null, string $prefix = null, array $exposedVariables = [], string $defaultViewClassName = null)
-    {
-        $this->presenter = $presenter;
-        $this->view = $view;
-        $this->prefix = $prefix;
-        $this->exposedVariables = $exposedVariables;
+    public function __construct(
+        public Core\Presenter|string $presenter,
+        public Core\View|string|null $view = null,
+        /**
+         * @var string : prefix for exposed variables
+         */
+        private ?string $prefix = null,
+        private array $exposedVariables = [],
+        /**
+         * View's ClassName for when we have specified a path instead of a View instance
+         */
+        private ?string $defaultViewClassName = null,
+    ){
         $this->setDefaultViewClassName($defaultViewClassName);
     }
 
@@ -84,7 +66,7 @@ class Route
             return ob_get_clean();
     }
 
-    public function execute(bool $obClean = true)
+    public function execute(bool $obClean = true): string
     {
         $obContent = '';
 
@@ -188,10 +170,7 @@ class Route
         return isset($this->presenter) && $this->presenter instanceof Core\Presenter;
     }
 
-    /**
-     * @return Core\Presenter | string
-     */
-    public function getPresenter()
+    public function getPresenter(): Core\Presenter|string
     {
         return $this->presenter;
     }

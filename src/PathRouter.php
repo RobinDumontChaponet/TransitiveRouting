@@ -4,34 +4,22 @@ namespace Transitive\Routing;
 
 class PathRouter implements Router
 {
-    /**
-     * @var array Route
-     */
-    private $presentersPath;
-    private $viewsPath;
-    private $separator;
+    private string $presenterSuffix = '.php';
+    private string $viewSuffix = '.php';
 
-    private $presenterSuffix = '.php';
-    private $viewSuffix = '.php';
+    private string $defaultViewClassName;
 
-    public $method;
-
-    private $prefix;
-    private $exposedVariables;
-    private $defaultViewClassName;
-
-    public function __construct(string $presentersPath, string $viewsPath = null, string $separator = '/', string $method = 'all', string $prefix = null, array $exposedVariables = [])
-    {
-        $this->presentersPath = $presentersPath;
+    public function __construct(
+        private string $presentersPath,
+        private ?string $viewsPath = null,
+        private string $separator = '/',
+        public string $method = 'all',
+        private ?string $prefix = null,
+        private array $exposedVariables = [],
+    ) {
         $this->presentersPath .= ('/' != substr($presentersPath, -1)) ? '/' : '';
         $this->viewsPath = $viewsPath ?? $presentersPath;
         $this->viewsPath .= ('/' != substr($viewsPath, -1)) ? '/' : '';
-
-        $this->method = $method;
-        $this->separator = $separator;
-
-        $this->setPrefix($prefix);
-        $this->exposedVariables = $exposedVariables;
     }
 
     public function execute(string $pattern, string $method = 'all'): ?Route
@@ -51,7 +39,8 @@ class PathRouter implements Router
             return null;
     }
 
-    private static function _real(string $filename, string $separator = '/') {
+    private static function _real(string $filename, string $separator = '/'): string|false
+    {
         $path = [];
         foreach(explode($separator, $filename) as $part) {
             if (empty($part) || '.' === $part)

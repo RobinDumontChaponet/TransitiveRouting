@@ -4,18 +4,13 @@ namespace Transitive\Routing;
 
 class ListRouter implements Router
 {
-    /**
-     * @var array Route
-     */
-    public $routes;
-    protected $prefix;
-    protected $exposedVariables;
+    protected ?string $prefix = null;
     protected $defaultViewClassName;
 
-    public function __construct(array $routes = [], array $exposedVariables = []) {
-        $this->setRoutes($routes);
-        $this->exposedVariables = $exposedVariables;
-    }
+    public function __construct(
+        public array $routes = [],
+        protected array $exposedVariables = [],
+    ) {}
 
     public function getRoutes(): array
     {
@@ -23,16 +18,13 @@ class ListRouter implements Router
     }
 
     /**
-     * @param array $routes
+     * @param Route[] $routes
      */
     public function setRoutes(array $routes): void
     {
         $this->routes = $routes;
     }
 
-    /**
-     * @param Route $route
-     */
     public function addRoute(string $pattern, Route $route, string $method = 'all'): void
     {
         if(isset($this->routes[$pattern]))

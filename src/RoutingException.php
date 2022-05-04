@@ -4,11 +4,11 @@ namespace Transitive\Routing;
 
 class RoutingException extends \UnexpectedValueException
 {
-    private $queryURL;
-
-    public function __construct(string $message = '', int $code = 0, string $queryURL = null) {
-        $this->queryURL = $queryURL;
-
+    public function __construct(
+        string $message = '',
+        int $code = 0,
+        private ?string $queryURL = null,
+    ) {
         parent::__construct($message, $code);
     }
 
