@@ -7,7 +7,7 @@ class PathRouter implements Router
     private string $presenterSuffix = '.php';
     private string $viewSuffix = '.php';
 
-    private string $defaultViewClassName;
+    private ?string $defaultViewClassName = null;
 
     public function __construct(
         private string $presentersPath,
