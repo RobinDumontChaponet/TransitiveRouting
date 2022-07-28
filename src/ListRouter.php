@@ -5,7 +5,7 @@ namespace Transitive\Routing;
 class ListRouter implements Router
 {
     protected ?string $prefix = null;
-    protected $defaultViewClassName;
+    protected ?string $defaultViewClassName = null;
 
     public function __construct(
         public array $routes = [],

@@ -2,6 +2,7 @@
 
 namespace Transitive\Routing;
 
+use DomainException;
 use Transitive\Core;
 
 /**
@@ -15,7 +16,7 @@ class Route
         public Core\Presenter|string $presenter,
         public Core\View|string|null $view = null,
         /**
-         * @var string : prefix for exposed variables
+         * prefix for exposed variables
          */
         private ?string $prefix = null,
         private array $exposedVariables = [],
@@ -32,10 +33,11 @@ class Route
         extract($exposedVariables, (!empty($_prefix)) ? EXTR_PREFIX_ALL : EXTR_OVERWRITE, $_prefix ?? '');
         unset($exposedVariables);
 
+        /** @psalm-suppress UnresolvableInclude */
         include ${$_prefix.((!empty($_prefix)) ? '_' : '').'path'};
     }
 
-    private static function includePresenter(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true)
+    private static function includePresenter(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true): string
     {
         if($obClean) {
             ob_start();
@@ -50,10 +52,12 @@ class Route
         }
 
         if($obClean)
-            return ob_get_clean();
+            return ob_get_clean()?:'';
+
+        return '';
     }
 
-    private static function includeView(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true)
+    private static function includeView(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true): string
     {
         if($obClean) {
             ob_start();
@@ -63,7 +67,9 @@ class Route
         self::_include(['path' => $path, 'obClean' => $obClean] + $exposedVariables, $_prefix);
 
         if($obClean)
-            return ob_get_clean();
+            return ob_get_clean()?:'';
+
+        return '';
     }
 
     public function execute(bool $obClean = true): string
@@ -75,17 +81,17 @@ class Route
 
         if(is_string($presenter)) {
             if(is_file($presenter)) {
-                $presenter = new Core\Presenter();
+                $presenterObject = new Core\Presenter();
 
                 try {
-                    $obContent .= self::includePresenter($this->getPresenter(), $this->exposedVariables + ['presenter' => $presenter], $this->prefix, $obClean);
+                    $obContent .= self::includePresenter($presenter, $this->exposedVariables + ['presenter' => $presenterObject], $this->prefix, $obClean);
                 } catch(Core\BreakFlowException $e) {
                     $this->setView();
 
                     throw $e;
                 }
 
-                $this->setPresenter($presenter);
+                $this->setPresenter($presenterObject);
             } else {
                 $this->setView();
                 throw new RoutingException('Presenter not found', 404);
@@ -97,23 +103,29 @@ class Route
 
         if(is_string($view)) {
             if(empty($this->defaultViewClassName)) {
+                /** @psalm-var class-string $className */
                 $className = self::defaultViewClassName;
-                $view = new $className();
+                $viewObject = new $className();
             } else
-                $view = new $this->defaultViewClassName();
+                $viewObject = new $this->defaultViewClassName();
 //             $view->content = '';
 
-            if(is_file($this->getView())) {
-                $obContent .= self::includeView($this->getView(), ['view' => &$view], $this->prefix, $obClean);
+            if(is_file($view)) {
+                $obContent .= self::includeView($view, ['view' => &$viewObject], $this->prefix, $obClean);
             } else {
-                $this->setView($view);
+                if($viewObject instanceof Core\View)
+                    $this->setView($viewObject);
+                else
+                    throw new RoutingException('Provided view is not a Core\View', 404);
+
                 throw new RoutingException('View not found', 404);
             }
 
-            $this->setView($view);
+            $this->setView($viewObject);
         }
 
-        if($this->hasPresenter() && $this->hasView() && $this->presenter->hasData())
+        // $this->hasPresenter() &&
+        if($this->hasView() && $this->presenter instanceof Core\Presenter && $this->presenter->hasData() && $this->view instanceof Core\View)
             $this->view->setData($this->presenter->getData());
 
         return $obContent;
@@ -134,7 +146,7 @@ class Route
         $this->exposedVariables = $exposedVariables;
     }
 
-    public function addExposedVariable(string $key, $value = null): void
+    public function addExposedVariable(string $key, mixed $value = null): void
     {
         $this->exposedVariables[$key] = $value;
     }
@@ -165,19 +177,19 @@ class Route
         return $this->prefix;
     }
 
-    public function hasPresenter(): bool
-    {
-        return isset($this->presenter) && $this->presenter instanceof Core\Presenter;
-    }
+    // public function hasPresenter(): bool
+    // {
+    //     return isset($this->presenter) && $this->presenter instanceof Core\Presenter;
+    // }
 
     public function getPresenter(): Core\Presenter|string
     {
         return $this->presenter;
     }
 
-    public function setPresenter(Core\Presenter $presenter)
+    public function setPresenter(Core\Presenter $presenter): void
     {
-        return $this->presenter = $presenter;
+        $this->presenter = $presenter;
     }
 
     public function hasView(): bool
@@ -185,69 +197,61 @@ class Route
         return isset($this->view) && $this->view instanceof Core\View;
     }
 
-    /**
-     * @return Core\View | string | null
-     */
-    public function getView()
+    public function getView(): Core\View|string|null
     {
         return $this->view;
     }
 
-    public function setView(Core\View $view = null)
+    public function setView(Core\View $view = null): void
     {
-        return $this->view = $view;
+        $this->view = $view;
     }
 
-    /**
-     * @param string $key
-     */
-    public function hasContent(?string $contentType = null, ?string $contentKey = null): bool
+    public function hasContent(string $contentType = '', string $contentKey = ''): bool
     {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->hasContent($contentType, $contentKey);
 
         return false;
     }
 
-    /**
-     * @param string $key
-     */
-    public function getContent(?string $contentType = null, ?string $contentKey = null)
+    public function getContent(string $contentType = '', string $contentKey = ''): ?Core\ViewResource
     {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->getContent($contentType, $contentKey);
+
+        return null;
     }
 
-    /**
-     * @param string $contentType
-     */
-    public function getContentByType(?string $contentType = null)
+    public function getContentByType(string $contentType = ''): ?Core\ViewResource
     {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->getContentByType($contentType);
+
+        return null;
     }
 
     public function getHead(): Core\ViewResource
     {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->getHead();
+
+        throw new DomainException('No view');
     }
 
-    public function getBody()
+    public function getDocument(): ?Core\ViewResource
     {
-        if(isset($this->view))
-            return $this->view->getBody();
-    }
-
-    public function getDocument()
-    {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->getDocument();
+
+        return null;
     }
 
-    public function getAllDocument()
+    public function getAllDocument(): ?Core\ViewResource
     {
-        if(isset($this->view))
+        if(isset($this->view) && $this->view instanceof Core\View)
             return $this->view->getAllDocument();
+
+        return null;
     }
 }

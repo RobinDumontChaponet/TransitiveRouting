@@ -19,7 +19,7 @@ class PathRouter implements Router
     ) {
         $this->presentersPath .= ('/' != substr($presentersPath, -1)) ? '/' : '';
         $this->viewsPath = $viewsPath ?? $presentersPath;
-        $this->viewsPath .= ('/' != substr($viewsPath, -1)) ? '/' : '';
+        $this->viewsPath .= ('/' != substr($this->viewsPath, -1)) ? '/' : '';
     }
 
     public function execute(string $pattern, string $method = 'all'): ?Route
@@ -30,11 +30,11 @@ class PathRouter implements Router
         $presenterPattern = $pattern.$this->presenterSuffix;
         $viewPattern = $pattern.$this->viewSuffix;
 
-        $realPresenter = self::_real($presenterPattern, $this->separator);
-        $realView = self::_real($viewPattern, $this->separator);
+        if(false === ($realPresenter = self::_real($presenterPattern, $this->separator)) || false === ($realView = self::_real($viewPattern, $this->separator)))
+            return null;
 
-        if($realPresenter && $realView && is_file($this->presentersPath.$realPresenter) || is_file($this->viewsPath.$realView))
-            return new Route($this->presentersPath.$realPresenter, $this->viewsPath.$realView, $this->prefix, $this->exposedVariables, $this->defaultViewClassName);
+        if($realPresenter && $realView && is_file($this->presentersPath.$realPresenter) || is_file(($this->viewsPath ?? '').$realView))
+            return new Route($this->presentersPath.$realPresenter, ($this->viewsPath ?? '').$realView, $this->prefix, $this->exposedVariables, $this->defaultViewClassName);
         else
             return null;
     }
@@ -62,9 +62,8 @@ class PathRouter implements Router
         $array = array();
 
         foreach(array_diff(scandir($this->presentersPath), array('..', '.', '.DS_Store')) as $pattern) {
-            $pattern = substr($pattern, 0, strpos($pattern, $this->presenterSuffix));
-
-            $array[$pattern] = $this->execute($pattern);
+            if($pattern = substr($pattern, 0, strpos($pattern, $this->presenterSuffix)?:null))
+                $array[$pattern] = $this->execute($pattern);
         }
 
         return $array;

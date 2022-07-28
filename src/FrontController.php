@@ -12,7 +12,7 @@ interface FrontController
     /**
      * Execute routers for query and return route if any.
      */
-    public function execute(string $queryURL = null): ?Route;
+    public function execute(string $queryURL = ''): ?Route;
 
     /**
      * Get all routers.
@@ -49,5 +49,5 @@ interface FrontController
     /**
      * Return processed content from current route.
      */
-    public function getContent(string $contentType = null): string;
+    public function getContent(string $contentType = ''): string;
 }
