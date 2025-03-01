@@ -72,12 +72,12 @@ class ListRouter implements Router
         $this->exposedVariables = $exposedVariables;
     }
 
-    public function setPrefix(string $prefix = null): void
+    public function setPrefix(?string $prefix = null): void
     {
         $this->prefix = $prefix;
     }
 
-    public function setDefaultViewClassName(string $defaultViewClassName = null): void
+    public function setDefaultViewClassName(?string $defaultViewClassName = null): void
     {
         $this->defaultViewClassName = $defaultViewClassName;
     }

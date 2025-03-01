@@ -37,7 +37,7 @@ class Route
         include ${$_prefix.((!empty($_prefix)) ? '_' : '').'path'};
     }
 
-    private static function includePresenter(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true): string
+    private static function includePresenter(string $path, array $exposedVariables = [], ?string $_prefix = null, bool $obClean = true): string
     {
         if($obClean) {
             ob_start();
@@ -57,7 +57,7 @@ class Route
         return '';
     }
 
-    private static function includeView(string $path, array $exposedVariables = [], string $_prefix = null, bool $obClean = true): string
+    private static function includeView(string $path, array $exposedVariables = [], ?string $_prefix = null, bool $obClean = true): string
     {
         if($obClean) {
             ob_start();
@@ -162,7 +162,7 @@ class Route
         return !empty($this->exposedVariables);
     }
 
-    public function setPrefix(string $prefix = null): void
+    public function setPrefix(?string $prefix = null): void
     {
         $this->prefix = $prefix;
     }
@@ -202,7 +202,7 @@ class Route
         return $this->view;
     }
 
-    public function setView(Core\View $view = null): void
+    public function setView(?Core\View $view = null): void
     {
         $this->view = $view;
     }

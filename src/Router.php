@@ -4,7 +4,7 @@ namespace Transitive\Routing;
 
 interface Router
 {
-    public function setDefaultViewClassName(string $defaultViewClassName = null): void;
+    public function setDefaultViewClassName(?string $defaultViewClassName = null): void;
 
     public function hasDefaultViewClassName(): bool;
 
