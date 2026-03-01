@@ -12,6 +12,7 @@ class ListRouter implements Router
         protected array $exposedVariables = [],
     ) {}
 
+    #[\Override]
     public function getRoutes(): array
     {
         return $this->routes;
@@ -44,6 +45,7 @@ class ListRouter implements Router
         }
     }
 
+    #[\Override]
     public function execute(string $pattern, string $method = 'all'): ?Route
     {
         $pattern = rtrim($pattern, '/');
@@ -77,11 +79,13 @@ class ListRouter implements Router
         $this->prefix = $prefix;
     }
 
+    #[\Override]
     public function setDefaultViewClassName(?string $defaultViewClassName = null): void
     {
         $this->defaultViewClassName = $defaultViewClassName;
     }
 
+    #[\Override]
     public function hasDefaultViewClassName(): bool
     {
         return !empty($this->defaultViewClassName);

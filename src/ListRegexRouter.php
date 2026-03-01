@@ -4,6 +4,7 @@ namespace Transitive\Routing;
 
 class ListRegexRouter extends ListRouter implements Router
 {
+    #[\Override]
     public function execute(string $pattern, string $method = 'all'): ?Route
     {
         $pattern = rtrim($pattern, '/');

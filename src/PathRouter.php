@@ -22,6 +22,7 @@ class PathRouter implements Router
         $this->viewsPath .= ('/' != substr($this->viewsPath, -1)) ? '/' : '';
     }
 
+    #[\Override]
     public function execute(string $pattern, string $method = 'all'): ?Route
     {
         if($this->method != $method || empty($pattern))
@@ -57,6 +58,7 @@ class PathRouter implements Router
         return implode('/', $path);
     }
 
+    #[\Override]
     public function getRoutes(): array
     {
         $array = array();
@@ -79,11 +81,13 @@ class PathRouter implements Router
         $this->prefix = $prefix;
     }
 
+    #[\Override]
     public function setDefaultViewClassName(?string $defaultViewClassName = null): void
     {
         $this->defaultViewClassName = $defaultViewClassName;
     }
 
+    #[\Override]
     public function hasDefaultViewClassName(): bool
     {
         return !empty($this->defaultViewClassName);
