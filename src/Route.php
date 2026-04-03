@@ -35,6 +35,10 @@ class Route
 
         /** @psalm-suppress UnresolvableInclude */
         include ${$_prefix.((!empty($_prefix)) ? '_' : '').'path'};
+
+        if(isset($presenter)) {
+            $presenter->doBind(get_defined_vars());
+        }
     }
 
     private static function includePresenter(string $path, array $exposedVariables = [], ?string $_prefix = null, bool $obClean = true): string
