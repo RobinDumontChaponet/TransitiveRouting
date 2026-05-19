@@ -14,7 +14,7 @@
 	],
 	"require": {
 		"php": ">8.1",
-		"transitive/core": "^2.5.3"
+		"transitive/core": "^2.5.4"
 	},
 	"autoload": {
 		"psr-4": {
@@ -31,7 +31,7 @@
 		"vimeo/psalm": "^6.12"
 	},
     "scripts": {
-        "test": "./vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/coverage.xml",
+        "test": "./vendor/bin/phpunit",
         "psalm": "./vendor/bin/psalm"
     }
 }
